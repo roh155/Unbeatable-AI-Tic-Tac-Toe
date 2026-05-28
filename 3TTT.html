@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neon Tic-Tac-Toe Pro (Unbeatable AI Bot by Rohit Baheshwar)</title>
+  <title>Rohit Baheshawar | Pro React Developer Portfolio</title>
+<meta name="title" content="Rohit Baheshawar | Pro React Developer Portfolio">
+<meta name="description" content="Explore advanced React projects, MERN stack applications, and an unbeatable AI-powered Tic-Tac-Toe game built by Rohit Baheshawar.">
+<meta name="keywords" content="Rohit Baheshawar, MERN Stack Developer, React Developer, Frontend Engineer India, Unbeatable AI Tic-Tac-Toe, Web Development Portfolio, Cloudflare Pages Portfolio">
+<meta name="robots" content="index, follow">
+<meta name="language" content="English">
+<meta name="author" content="Rohit Baheshawar">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://rohit-portfolio.pages.dev/"> <meta property="og:title" content="Rohit Baheshawar | Pro React Developer Portfolio">
+<meta property="og:description" content="Check out my latest Unbeatable AI Tic-Tac-Toe game and full-stack MERN projects. Built with advanced React.js logic.">
+<meta property="og:image" content="https://github.com/ghost.png"> <meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:title" content="Rohit Baheshawar | Pro React Developer Portfolio">
+<meta property="twitter:description" content="Explore advanced React projects and AI games built by Rohit Baheshawar.">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    body { 
+      display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0;
+      background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
+      color: #fff; font-family: 'Poppins', sans-serif;
+    }
+    .game-card {
+      background: rgba(25, 25, 35, 0.6); backdrop-filter: blur(15px);
+      padding: 35px; border-radius: 25px;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.1), inset 0 0 20px rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(0, 255, 255, 0.2); text-align: center; width: 360px;
+    }
+    h1 { 
+      margin: 0 0 20px 0; font-size: 30px; font-family: 'Orbitron', sans-serif;
+      color: #fff; text-shadow: 0 0 10px #00f3ff, 0 0 20px #00f3ff; letter-spacing: 2px;
+    }
+    .mode-selection button {
+      display: block; width: 100%; padding: 16px; margin: 15px 0;
+      font-size: 18px; font-family: 'Orbitron', sans-serif;
+      border: 1px solid #00f3ff; border-radius: 12px; cursor: pointer;
+      background: transparent; color: #00f3ff; text-shadow: 0 0 5px #00f3ff; transition: all 0.3s ease;
+    }
+    .mode-selection button:hover {
+      background: #00f3ff; color: #000; box-shadow: 0 0 20px #00f3ff; transform: translateY(-3px);
+    }
+    .scoreboard {
+      display: flex; justify-content: space-around; background: rgba(0, 0, 0, 0.4);
+      padding: 15px; border-radius: 15px; margin-bottom: 25px; border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .score-box { font-size: 14px; color: #aaa; text-transform: uppercase; letter-spacing: 1px;}
+    .score { display: block; font-size: 28px; font-family: 'Orbitron', sans-serif; font-weight: 700; margin-top: 5px; }
+    .score.x-score { color: #00f3ff; text-shadow: 0 0 10px #00f3ff; }
+    .score.o-score { color: #ff00ea; text-shadow: 0 0 10px #ff00ea; }
+    .score.draw-score { color: #f1c40f; text-shadow: 0 0 10px #f1c40f; }
+    .status { font-size: 18px; margin-bottom: 25px; color: #fff; letter-spacing: 1px; min-height: 27px; }
+    .board-row { display: flex; justify-content: center; }
+    .square { 
+      width: 95px; height: 95px; font-size: 55px; font-family: 'Orbitron', sans-serif;
+      cursor: pointer; background: rgba(0, 0, 0, 0.3); border: 2px solid rgba(255, 255, 255, 0.05); 
+      border-radius: 15px; margin: 6px; display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s ease; box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+    }
+    .square:hover:not(:disabled) { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.3); }
+    .square:disabled { cursor: not-allowed; }
+    @keyframes popIn {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .square.x { color: #00f3ff; text-shadow: 0 0 15px #00f3ff, 0 0 30px #00f3ff; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .square.o { color: #ff00ea; text-shadow: 0 0 15px #ff00ea, 0 0 30px #ff00ea; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .action-btn { 
+      margin-top: 25px; padding: 15px 0; font-size: 16px; font-family: 'Orbitron', sans-serif;
+      cursor: pointer; background: linear-gradient(45deg, #00f3ff, #0066ff); color: #fff; 
+      border: none; border-radius: 12px; width: 100%; text-transform: uppercase; letter-spacing: 1px;
+      transition: opacity 0.3s; box-shadow: 0 0 15px rgba(0, 102, 255, 0.5);
+    }
+    .action-btn:hover { opacity: 0.8; }
+    .reset-btn { background: transparent; border: 1px solid rgba(255,255,255,0.2); box-shadow: none; margin-top: 15px; }
+    .reset-btn:hover { background: rgba(255,255,255,0.1); opacity: 1;}
+  </style>
+</head>
+<body>
+  
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    function calculateWinner(squares) {
+      const lines = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8], 
+        [0, 3, 6], [1, 4, 7], [2, 5, 8], 
+        [0, 4, 8], [2, 4, 6]             
+      ];
+      for (let i = 0; i < lines.length; i++) {
+        const [a, b, c] = lines[i];
+        if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+          return squares[a];
+        }
+      }
+      return null;
+    }
+
+    function App() {
+      const [gameMode, setGameMode] = useState(null);
+      const [squares, setSquares] = useState(Array(9).fill(null));
+      const [xIsNext, setXIsNext] = useState(true);
+      
+      const [scores, setScores] = useState({ X: 0, O: 0, Draws: 0 });
+      const [matchCount, setMatchCount] = useState(1);
+      const [matchOver, setMatchOver] = useState(false);
+      const [seriesWinner, setSeriesWinner] = useState(null);
+
+      // AI BOT - MINIMAX ALGORITHM (Unbeatable)
+      useEffect(() => {
+        if (gameMode === 'bot' && !xIsNext && !matchOver && !seriesWinner) {
+          
+          const timer = setTimeout(() => {
+            const boardCopy = [...squares];
+            let bestScore = -Infinity;
+            let bestMove = -1;
+
+            // Minimax Recursive Function
+            const minimax = (board, depth, isMaximizing) => {
+              const winner = calculateWinner(board);
+              if (winner === 'O') return 10 - depth; // Bot wins (Good)
+              if (winner === 'X') return depth - 10; // Player wins (Bad)
+              if (!board.includes(null)) return 0;   // Draw
+
+              if (isMaximizing) {
+                let maxEval = -Infinity;
+                for (let i = 0; i < 9; i++) {
+                  if (board[i] === null) {
+                    board[i] = 'O'; // Try Bot move
+                    let evalScore = minimax(board, depth + 1, false);
+                    board[i] = null; // Undo move
+                    maxEval = Math.max(maxEval, evalScore);
+                  }
+                }
+                return maxEval;
+              } else {
+                let minEval = Infinity;
+                for (let i = 0; i < 9; i++) {
+                  if (board[i] === null) {
+                    board[i] = 'X'; // Try Player move
+                    let evalScore = minimax(board, depth + 1, true);
+                    board[i] = null; // Undo move
+                    minEval = Math.min(minEval, evalScore);
+                  }
+                }
+                return minEval;
+              }
+            };
+
+            // Find the best possible move
+            for (let i = 0; i < 9; i++) {
+              if (boardCopy[i] === null) {
+                boardCopy[i] = 'O';
+                let score = minimax(boardCopy, 0, false);
+                boardCopy[i] = null;
+                if (score > bestScore) {
+                  bestScore = score;
+                  bestMove = i;
+                }
+              }
+            }
+
+            // Execute the best move
+            if(bestMove !== -1) {
+              handleMove(bestMove, 'O');
+            }
+          }, 500); // 0.5s Thinking time
+          
+          return () => clearTimeout(timer);
+        }
+      }, [xIsNext, matchOver, seriesWinner, gameMode, squares]);
+
+      const handleMove = (i, playerOverride = null) => {
+        if (squares[i] || matchOver || seriesWinner) return;
+
+        const nextSquares = squares.slice();
+        const currentTurn = playerOverride ? playerOverride : (xIsNext ? 'X' : 'O');
+        nextSquares[i] = currentTurn;
+        setSquares(nextSquares);
+
+        const winner = calculateWinner(nextSquares);
+        const isDraw = !winner && nextSquares.every((sq) => sq !== null);
+
+        if (winner || isDraw) {
+          setMatchOver(true);
+          const newScores = { ...scores };
+          if (winner === 'X') newScores.X += 1;
+          else if (winner === 'O') newScores.O += 1;
+          else newScores.Draws += 1;
+          setScores(newScores);
+
+          let sWinner = null;
+          if (newScores.X === 2) sWinner = 'X';
+          else if (newScores.O === 2) sWinner = 'O';
+          else if (matchCount === 3) {
+            if (newScores.X > newScores.O) sWinner = 'X';
+            else if (newScores.O > newScores.X) sWinner = 'O';
+            else sWinner = 'Draw';
+          }
+          
+          if (sWinner) setSeriesWinner(sWinner);
+        } else {
+          // Change turn only if game continues
+          setXIsNext(currentTurn === 'X' ? false : true);
+        }
+      };
+
+      const handleNextMatch = () => {
+        setSquares(Array(9).fill(null));
+        setMatchOver(false);
+        setMatchCount(matchCount + 1);
+        setXIsNext(true); // Player (X) always starts
+      };
+
+      const resetFullGame = () => {
+        setGameMode(null);
+        setSquares(Array(9).fill(null));
+        setScores({ X: 0, O: 0, Draws: 0 });
+        setMatchCount(1);
+        setMatchOver(false);
+        setSeriesWinner(null);
+        setXIsNext(true);
+      };
+
+      if (!gameMode) {
+        return (
+          <div className="game-card">
+            <h1>NEON TIC-TAC-TOE</h1>
+            <p style={{color: '#aaa', marginBottom: '30px'}}>Select Mode (Best of 3)</p>
+            <div className="mode-selection">
+              <button onClick={() => setGameMode('bot')}>1 PLAYER VS AI BOT</button>
+              <button onClick={() => setGameMode('pvp')}>2 PLAYERS LOCAL</button>
+            </div>
+          </div>
+        );
+      }
+
+      const player2Label = gameMode === 'bot' ? 'AI BOT' : 'P2 (O)';
+      const matchWinner = calculateWinner(squares);
+      
+      let status;
+      if (seriesWinner) {
+        if (seriesWinner === 'Draw') status = '⚡ TOURNAMENT DRAW ⚡';
+        else if (seriesWinner === 'X') status = '🏆 P1 (X) WINS TOURNAMENT!';
+        else status = `🤖 AI BOT WINS TOURNAMENT!`;
+      } else if (matchOver) {
+        if (matchWinner) status = `🔥 MATCH WINNER: ${matchWinner} 🔥`;
+        else status = '⚖️ MATCH DRAW!';
+      } else {
+        if (gameMode === 'bot' && !xIsNext) status = '🤖 AI IS CALCULATING...';
+        else status = `TARGET ALOCKED: ${xIsNext ? 'P1 (X)' : player2Label}`;
+      }
+
+      return (
+        <div className="game-card">
+          <h1>{seriesWinner ? 'FINAL RESULT' : `MATCH ${matchCount} / 3`}</h1>
+          
+          <div className="scoreboard">
+            <div className="score-box">P1 (X)<br/><span className="score x-score">{scores.X}</span></div>
+            <div className="score-box">DRAWS<br/><span className="score draw-score">{scores.Draws}</span></div>
+            <div className="score-box">{player2Label}<br/><span className="score o-score">{scores.O}</span></div>
+          </div>
+
+          <div className="status" style={{ color: matchOver ? '#f1c40f' : '#fff' }}>{status}</div>
+          
+          <div className="board-row">
+            {[0, 1, 2].map(i => (
+              <button key={i} className={`square ${squares[i] === 'X' ? 'x' : squares[i] === 'O' ? 'o' : ''}`} onClick={() => handleMove(i, null)} disabled={matchOver || seriesWinner || (gameMode === 'bot' && !xIsNext)}>
+                {squares[i]}
+              </button>
+            ))}
+          </div>
+          <div className="board-row">
+            {[3, 4, 5].map(i => (
+              <button key={i} className={`square ${squares[i] === 'X' ? 'x' : squares[i] === 'O' ? 'o' : ''}`} onClick={() => handleMove(i, null)} disabled={matchOver || seriesWinner || (gameMode === 'bot' && !xIsNext)}>
+                {squares[i]}
+              </button>
+            ))}
+          </div>
+          <div className="board-row">
+            {[6, 7, 8].map(i => (
+              <button key={i} className={`square ${squares[i] === 'X' ? 'x' : squares[i] === 'O' ? 'o' : ''}`} onClick={() => handleMove(i, null)} disabled={matchOver || seriesWinner || (gameMode === 'bot' && !xIsNext)}>
+                {squares[i]}
+              </button>
+            ))}
+          </div>
+
+          {matchOver && !seriesWinner && (
+            <button className="action-btn" onClick={handleNextMatch}>ENGAGE NEXT MATCH</button>
+          )}
+          
+          {seriesWinner && (
+            <button className="action-btn" onClick={resetFullGame}>NEW TOURNAMENT</button>
+          )}
+
+          <button className="action-btn reset-btn" onClick={resetFullGame}>ABORT / MAIN MENU</button>
+        </div>
+      );
+    }
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
